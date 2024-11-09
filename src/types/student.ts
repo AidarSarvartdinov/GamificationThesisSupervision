@@ -1,11 +1,9 @@
 import { Work } from '@/types/work';
+import { IUser } from './user';
+import { Professor } from './professor';
 
-export interface Student {
-	id?: string;
-	token?: string;
-	name: string;
-	email: string;
-	number: string;
-	about: string;
-	works: Work[];
+export interface Student extends IUser {
+	work: Work | undefined;
+	supervisor: Professor | undefined;
+	themes: string | undefined | null
 }

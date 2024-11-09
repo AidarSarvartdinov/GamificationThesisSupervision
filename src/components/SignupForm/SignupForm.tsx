@@ -3,14 +3,14 @@
 import React, { useState } from 'react';
 import styles from './SignupForm.module.css';
 import { useRouter } from 'next/navigation';
-import { createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
-import { auth, db } from '../../firebaseConfig';
-import { collection, addDoc } from 'firebase/firestore';
+// import { createUserWithEmailAndPassword, AuthError } from 'firebase/auth';
+// import { auth, db } from '../../firebaseConfig';
+// import { collection, addDoc } from 'firebase/firestore';
 import { Work } from '../../types/work';
 import { Student } from '../../types/student';
 import { parsePhoneNumber, isValidPhoneNumber, PhoneNumber } from 'libphonenumber-js';
 import Cookies from 'js-cookie';
-import { UserCredential } from 'firebase/auth';
+// import { UserCredential } from 'firebase/auth';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const SignupForm: React.FC = () => {
@@ -20,7 +20,6 @@ const SignupForm: React.FC = () => {
 	const [passwordConfirmation, setPasswordConfirmation] = useState('');
 	const [number, setNumber] = useState('');
 	const [about, setAbout] = useState('');
-	const [works, setWorks] = useState<Work[]>([{ title: '' }]);
 	const [error, setError] = useState('');
 	const router = useRouter();
 

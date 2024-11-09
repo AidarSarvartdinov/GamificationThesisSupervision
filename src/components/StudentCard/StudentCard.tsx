@@ -10,9 +10,15 @@ interface UserCardProps {
 const StudentCard: React.FC<UserCardProps> = ({ student }) => {
 	return (
 		<div className={styles.userCard}>
-			<div className={styles.profilePlaceholder}></div>
+			{student.image ? (
+				<div>
+					<img src={student.image}></img>
+				</div>
+			) : (
+				<div className={styles.profilePlaceholder}></div>
+			)}
 			<h2>{student.name}</h2>
-			<p>About: {student.about}</p>
+			<div>{student.work?.title}</div>
 			<Link href={`/students/${student.id}`}>
 				<button className={styles.viewDetailsButton}>View Details</button>
 			</Link>

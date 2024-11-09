@@ -1,12 +1,9 @@
 'use client';
 import React, { useState } from 'react';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebaseConfig';
 import { useRouter } from 'next/navigation';
 import styles from './LoginForm.module.css';
-import { getStudentByToken } from '@/lib/firestore';
+import {signIn} from 'next-auth/react';
 import Cookies from 'js-cookie';
-import { UserCredential } from 'firebase/auth';
 import { Student } from '@/types/student';
 const LoginForm: React.FC = () => {
 	const [email, setEmail] = useState<string>('');
@@ -16,26 +13,12 @@ const LoginForm: React.FC = () => {
 
 	const handleLogin = async (e: React.FormEvent) => {
 		e.preventDefault();
-		try {
-			const userCredential: UserCredential = await signInWithEmailAndPassword(
-				auth,
-				email,
-				password,
-			);
-			const token = (await userCredential.user.uid) as string;
-
-			console.log('TOKEN', token);
-
-			const studentData: Student = await getStudentByToken(token as string);
-
-			Cookies.set('token', token);
-			Cookies.set('id', studentData.id as string);
-			Cookies.set('name', studentData.name);
-
-			router.push('/students');
-		} catch (err) {
-			setError('Failed to log in. Please check your email and password.');
-		}
+		const result = await signIn("credentials", {
+			email: email,
+			password: password,
+			redirect: true,
+			callbackUrl: "/students",
+		  });
 	};
 
 	return (

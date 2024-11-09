@@ -1,32 +1,54 @@
+import withAuth, { NextRequestWithAuth } from 'next-auth/middleware';
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
 
-const skipRoutes: string[] = ['/login', '/signup'];
-const availableForGuest: string[] = ['/', '/login', '/signup'];
 
-export async function middleware(req: NextRequest): Promise<NextResponse> {
-	const token: string = req.cookies.get('token')?.value || '';
-
-	// req.cookies.clear();
-	// return ;
-
-	console.log(req.nextUrl.pathname);
-	console.log(token);
-
-	if (!token) {
-		if (availableForGuest.includes(req.nextUrl.pathname)) {
-			return NextResponse.next();
+export default withAuth(
+	function middleware(request: NextRequestWithAuth) {
+		if (request.nextUrl.pathname.startsWith('/professor')) {
+			if (request.nextauth.token?.role === 'student') {
+				return NextResponse.redirect(new URL('/student/profile', request.url));
+			} else {
+				return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+			}
 		}
-		return NextResponse.redirect(new URL('/login', req.url));
-	}
 
-	if (skipRoutes.includes(req.nextUrl.pathname)) {
-		return NextResponse.redirect(new URL('/students', req.url));
-	}
+		if (request.nextUrl.pathname.startsWith('/student')) {
+			if (request.nextauth.token?.role === 'professor') {
+				return NextResponse.redirect(new URL('/professor/profile', request.url));
+			} else {
+				return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+			}
+		}
 
-	return NextResponse.next();
-}
+		if (
+			request.nextUrl.pathname.startsWith('/admin') &&
+			request.nextauth.token?.role !== 'admin'
+		) {
+			return NextResponse.redirect(
+				new URL(`/${request.nextauth.token?.role}/profile`, request.url),
+			);
+		}
 
+		if (
+			request.nextUrl.pathname.startsWith('/login') ||
+			request.nextUrl.pathname.startsWith('/signup') ||
+			request.nextUrl.pathname.startsWith('/')
+		) {
+			if (request.nextauth.token?.role === 'admin') {
+				return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+			} else {
+				return NextResponse.redirect(
+					new URL(`/${request.nextauth.token?.role}/profile`, request.url),
+				);
+			}
+		}
+	},
+	{
+		callbacks: {
+			authorized: ({ token }) => !!token,
+		},
+	},
+);
 export const config = {
-	matcher: ['/login', '/signup', '/students/:path*', '/'], // Adjust the paths you want to protect
+	matcher: ['/professor/:path*', '/student/:path*', '/admin/:path*', '/signup', '/login'], // эти пути вызывают функции проверки в middleware
 };

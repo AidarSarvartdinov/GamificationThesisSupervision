@@ -4,24 +4,32 @@ import React, { useEffect, useState } from 'react';
 import StudentCard from '../StudentCard/StudentCard';
 import { Student } from '@/types/student';
 import styles from './StudentList.module.css';
-import { getStudents } from '@/lib/firestore';
+// import { useSession } from 'next-auth/react';
+// import getStudents from '@/app/api/getStudents';
+// import { useQuery } from '@tanstack/react-query';
+import { useStudents } from '@/hooks/useStudents';
+import { useAppSession } from '@/hooks/useAppSession';
 
 const StudentList: React.FC = () => {
-	const [students, setStudents] = useState<Student[]>([]);
+	// const [students, setStudents] = useState<Student[]>([]);
+	const {data:session} = useAppSession();
+	const {data, isError} = useStudents(session?.user.id as number);
 
-	useEffect(() => {
-		const fetchStudents = async () => {
-			const studentsData: Student[] = await getStudents();
-			setStudents(studentsData);
-		};
+	// useEffect(() => {
+	// 	const fetchStudents = async () => {
+	// 		const studentsData: Student[] = await getStudents(session?.user.id as number);
+	// 		setStudents(studentsData);
+	// 	};
+	// 	fetchStudents();
+	// }, []);
 
-		// studentsCache = students;
-		fetchStudents();
-	}, []);
+	if (isError) {
+		return <h3>Data acquisition error</h3>
+	}
 
 	return (
 		<div className={styles.userList}>
-			{students.map((student) => (
+			{data?.map((student: Student) => (
 				<StudentCard key={student.id} student={student} />
 			))}
 		</div>

@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '@/components/Header/Header';
 import StudentDetailsPage from '@/components/StudentDetails/StudentDetails';
 
 export const metadata = {
@@ -10,7 +9,6 @@ export const metadata = {
 const StudentPage = (): React.JSX.Element | null => {
 	return (
 		<div>
-			<Header />
 			<StudentDetailsPage />
 		</div>
 	);

@@ -1,23 +1,23 @@
 import React from 'react';
 import '../styles/globals.css';
+import AuthSessionProvider from '@/providers/AuthSession';
+import QueryProvider from '@/providers/QueryProvider';
 
 export const metadata = {
 	icons: {
 		icon: './favicon.ico',
 	},
-	authors: [
-		{ name: 'Ramazan Nazmiev' },
-		{ name: 'Rail Sharipov' },
-		{ name: 'Urvatullo Atoev' },
-		{ name: 'Aidar Sarvartdinov' },
-		{ name: 'Karen Mobley' },
-	],
+	authors: [{ name: 'Aidar Sarvartdinov' }],
 };
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<html lang="en">
-			<body>{children}</body>
+			<AuthSessionProvider>
+				<QueryProvider>
+					<body>{children}</body>
+				</QueryProvider>
+			</AuthSessionProvider>
 		</html>
 	);
 };

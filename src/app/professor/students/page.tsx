@@ -1,4 +1,3 @@
-import Header from '@/components/Header/Header';
 import StudentList from '@/components/StudentList/StudentList';
 import React from 'react';
 
@@ -12,7 +11,6 @@ export const metadata = {
 const StudentsPage = (): React.JSX.Element => {
 	return (
 		<div>
-			<Header />
 			<StudentList />
 		</div>
 	);
